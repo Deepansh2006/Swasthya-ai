@@ -1,0 +1,63 @@
+==============================================================================
+   DEPLOYMENT GUIDE: RENDER (BACKEND) + VERCEL (FRONTEND)
+==============================================================================
+
+Repository: https://github.com/Deepansh2006/Swasthya-ai.git
+
+------------------------------------------------------------------------------
+PART 1: DEPLOY BACKEND ON RENDER (FastAPI + AI Engine)
+------------------------------------------------------------------------------
+Render runs the Python FastAPI service, RAG engine, and Gemini API calls.
+
+1. Go to https://dashboard.render.com and Sign In (via GitHub).
+2. Click "New +" -> "Web Service".
+3. Select "Build and deploy from a Git repository" and select:
+   -> Deepansh2006/Swasthya-ai
+4. Fill in the deployment settings:
+   - Name: swasthya-ai-backend (or any name you prefer)
+   - Region: Singapore / Oregon / Frankfurt (closest to your users)
+   - Branch: main
+   - Root Directory: (Leave blank - root of the repo)
+   - Runtime: Python 3
+   - Build Command:
+       pip install -r requirements.txt
+   - Start Command:
+       python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+
+5. Add Environment Variables (under "Environment" / "Advanced"):
+   - Key: GEMINI_API_KEYS
+     Value: your_gemini_api_key_1,your_gemini_api_key_2 (or GEMINI_API_KEY)
+   - Key: PYTHON_VERSION
+     Value: 3.11.9 (or 3.11.0)
+
+6. Click "Deploy Web Service".
+7. Once deployed, Render will provide a public URL like:
+   https://swasthya-ai-backend.onrender.com
+   (Verify health at: https://swasthya-ai-backend.onrender.com/api/health)
+
+
+------------------------------------------------------------------------------
+PART 2: DEPLOY FRONTEND ON VERCEL (React + Vite)
+------------------------------------------------------------------------------
+Vercel hosts the responsive Vite/React UI and proxies API requests to Render.
+
+1. Go to https://vercel.com and Sign In (via GitHub).
+2. Click "Add New..." -> "Project".
+3. Import your repository:
+   -> Deepansh2006/Swasthya-ai
+4. In the Project Configuration:
+   - Framework Preset: Vite
+   - Root Directory: Click "Edit" and choose:
+       web-ui
+   - Build Command: npm run build (auto-detected)
+   - Output Directory: dist (auto-detected)
+   - Install Command: npm install (auto-detected)
+
+5. Configure API Proxy to your Render Backend:
+   Add a vercel.json in web-ui or set an environment variable pointing to:
+   VITE_API_BASE_URL = https://swasthya-ai-backend.onrender.com
+
+6. Click "Deploy".
+7. Your app is live at:
+   https://swasthya-ai.vercel.app (or custom domain)
+==============================================================================
