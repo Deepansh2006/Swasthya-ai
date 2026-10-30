@@ -110,43 +110,10 @@ def execute_triage(request: TriageRequest):
         raise HTTPException(status_code=400, detail="Transcript cannot be empty.")
 
     # =========================================================================
-    # STEP 1: DETERMINISTIC RED-FLAG SAFETY CIRCUIT (FAST-PATH BYPASS)
+    # STEP 1: DETERMINISTIC RED-FLAG SAFETY CIRCUIT
     # =========================================================================
     is_emergency, rule_match = rule_engine.evaluate(transcript)
-
-    if is_emergency and rule_match:
-        latency_ms = int((time.time() - start_time) * 1000)
-        action_hi = rule_match.get("action_hi", "तुरंत 108 पर कॉल करें या नजदीकी अस्पताल जाएं।")
-        source_desc = rule_match.get("source", "WHO IMCI / NHM Emergency Guidelines")
-        
-        # Audio synthesis for spoken emergency alert
-        audio_prompt = f"सावधान। यह एक गंभीर आपात स्थिति है। {action_hi}"
-        
-        return TriageResponse(
-            session_id=session_id,
-            turn_number=turn_number,
-            is_emergency=True,
-            urgency_level=UrgencyLevel.EMERGENCY,
-            urgency_badge_hi=URGENCY_BADGES_HI[UrgencyLevel.EMERGENCY],
-            urgency_color=URGENCY_COLORS[UrgencyLevel.EMERGENCY],
-            advice_hi=action_hi,
-            warning_signs_hi="मरीज को तुरंत नजदीकी बड़े अस्पताल ले जाना आवश्यक है।",
-            action_required_hi="तुरंत 108 एम्बुलेंस पर कॉल करें।",
-            sources=[SourceCitation(
-                id=rule_match.get("protocol_id", "EMERG_FAST"),
-                protocol=rule_match.get("protocol_name", "Emergency Danger Signs"),
-                source=source_desc,
-                page=1,
-                relevance_score=1.0,
-                excerpt=action_hi
-            )],
-            call_108_recommended=True,
-            follow_up_question_hi=None,
-            extracted_slots={"danger_sign_triggered": rule_match.get("matched_trigger")},
-            execution_latency_ms=latency_ms,
-            rule_urgency=UrgencyLevel.EMERGENCY,
-            llm_urgency=None
-        )
+    rule_urgency = UrgencyLevel.EMERGENCY if (is_emergency and rule_match) else None
 
     # =========================================================================
     # STEP 2: STRUCTURED CLINICAL SLOT EXTRACTION
@@ -157,7 +124,7 @@ def execute_triage(request: TriageRequest):
     # STEP 3: CONVERSATIONAL SLOT-FILLING (FOLLOW-UP LOOP - MAX 3 TURNS)
     # =========================================================================
     follow_up_question = None
-    if turn_number < 3 and slots.missing_critical_fields:
+    if not is_emergency and turn_number < 3 and slots.missing_critical_fields:
         missing_field = slots.missing_critical_fields[0]
         if missing_field == "duration_days":
             follow_up_question = "यह समस्या कितने दिनों या घंटों से है?"
@@ -170,6 +137,18 @@ def execute_triage(request: TriageRequest):
     query = f"{transcript} {slots.primary_symptom} {' '.join(slots.danger_signs_detected)}"
     retrieved_sources = rag_service.retrieve(query, top_k=3)
 
+    # If deterministic rule matched, ensure rule protocol is at top of sources
+    if rule_match:
+        rule_source = SourceCitation(
+            id=rule_match.get("protocol_id", "EMERG_FAST"),
+            protocol=rule_match.get("protocol_name", "Emergency Danger Signs"),
+            source=rule_match.get("source", "WHO IMCI / NHM Emergency Guidelines"),
+            page=1,
+            relevance_score=1.0,
+            excerpt=rule_match.get("action_hi", "अति-गंभीर आपातकालीन लक्षण। तुरंत अस्पताल ले जाएं।")
+        )
+        retrieved_sources = [rule_source] + [s for s in retrieved_sources if s.id != rule_source.id][:2]
+
     # =========================================================================
     # STEP 5: GROUNDED CLINICAL REASONING (WITH CONVERSATIONAL MEMORY)
     # =========================================================================
@@ -181,12 +160,23 @@ def execute_triage(request: TriageRequest):
     # =========================================================================
     # STEP 6: SAFETY MERGE & SANITIZATION
     # =========================================================================
-    # Rule urgency is None here since no hard emergency fired, so final = max(None, llm)
-    final_urgency = safety_merge_service.merge_urgency(None, raw_llm_urgency)
+    # Hard lock: if rule says EMERGENCY, final_urgency is GUARANTEED EMERGENCY
+    final_urgency = safety_merge_service.merge_urgency(rule_urgency, raw_llm_urgency)
 
-    # Sanitize advice against banned dosages or diagnoses
-    raw_advice = llm_output.get("advice_hi", "कृपया डॉक्टर से सलाह लें।")
+    # Sanitize advice against banned dosages
+    raw_advice = llm_output.get("advice_hi", "")
+    if not raw_advice and rule_match:
+        raw_advice = rule_match.get("action_hi", "तुरंत 108 पर कॉल करें या नजदीकी अस्पताल जाएं।")
     sanitized_advice, was_sanitized = safety_merge_service.sanitize_advice(raw_advice)
+
+    # Medical emergency justification / explanation
+    emergency_reason = llm_output.get("emergency_reason_hi")
+    if not emergency_reason and final_urgency == UrgencyLevel.EMERGENCY:
+        if rule_match:
+            protocol_name = rule_match.get("protocol_name", "आपातकालीन स्थिति")
+            emergency_reason = f"यह लक्षण {protocol_name} की ओर संकेत करते हैं, जो शरीर के लिए जानलेवा हो सकता है। मरीज को तुरंत ऑक्सीजन, ड्रिप (IV) या विशेषज्ञ डॉक्टरों की निगरानी की जरूरत है।"
+        else:
+            emergency_reason = "मरीज में गंभीर खतरे के लक्षण हैं, जिसमें थोड़ी भी देरी जानलेवा हो सकती है। तुरंत अस्पताल में भर्ती कराना आवश्यक है।"
 
     latency_ms = int((time.time() - start_time) * 1000)
 
@@ -208,13 +198,14 @@ def execute_triage(request: TriageRequest):
         urgency_color=URGENCY_COLORS[final_urgency],
         advice_hi=sanitized_advice,
         warning_signs_hi=llm_output.get("warning_signs_hi"),
-        action_required_hi=llm_output.get("action_required_hi", "डॉक्टर को दिखाएं"),
+        emergency_reason_hi=emergency_reason if final_urgency == UrgencyLevel.EMERGENCY else None,
+        action_required_hi=llm_output.get("action_required_hi", "तुरंत 108 एम्बुलेंस पर कॉल करें।" if final_urgency == UrgencyLevel.EMERGENCY else "डॉक्टर को दिखाएं"),
         sources=retrieved_sources,
         call_108_recommended=(final_urgency == UrgencyLevel.EMERGENCY),
         follow_up_question_hi=follow_up_question,
         extracted_slots=slots.model_dump(),
         execution_latency_ms=latency_ms,
-        rule_urgency=None,
+        rule_urgency=rule_urgency,
         llm_urgency=raw_llm_urgency
     )
 

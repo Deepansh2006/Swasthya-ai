@@ -754,22 +754,37 @@ export default function ChatAgentWorkspace({ currentUser, onOpenAuth }) {
 
                           {/* Emergency 108 Alert Box if Emergency */}
                           {result.urgency_level === 'EMERGENCY' && (
-                            <div className="p-4 bg-rose-600 text-white rounded-xl shadow-md flex items-center justify-between gap-4 animate-pulse">
-                              <div>
-                                <div className="font-bold text-sm flex items-center gap-1.5">
-                                  <PhoneCall className="w-4 h-4" />
-                                  <span>Call 108 Emergency Ambulance Immediately</span>
+                            <div className="space-y-3">
+                              <div className="p-4 bg-rose-600 text-white rounded-xl shadow-md flex items-center justify-between gap-4 animate-pulse">
+                                <div>
+                                  <div className="font-bold text-sm flex items-center gap-1.5">
+                                    <PhoneCall className="w-4 h-4" />
+                                    <span>Call 108 Emergency Ambulance Immediately</span>
+                                  </div>
+                                  <p className="text-xs text-rose-100">
+                                    Acute danger sign detected. Transfer patient to nearest hospital without delay.
+                                  </p>
                                 </div>
-                                <p className="text-xs text-rose-100">
-                                  Acute danger sign detected. Transfer patient to nearest hospital without delay.
-                                </p>
+                                <a
+                                  href="tel:108"
+                                  className="px-4 py-2 bg-white text-rose-700 hover:bg-rose-50 font-bold text-xs sm:text-sm rounded-lg shadow-sm whitespace-nowrap transition-colors"
+                                >
+                                  Dial 108
+                                </a>
                               </div>
-                              <a
-                                href="tel:108"
-                                className="px-4 py-2 bg-white text-rose-700 hover:bg-rose-50 font-bold text-xs sm:text-sm rounded-lg shadow-sm whitespace-nowrap transition-colors"
-                              >
-                                Dial 108
-                              </a>
+
+                              {/* Medical Justification Box: Tells the family WHY it is an emergency */}
+                              {result.emergency_reason_hi && (
+                                <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs space-y-1 text-rose-950">
+                                  <span className="font-bold flex items-center gap-1.5 text-rose-800">
+                                    <ShieldAlert className="w-4 h-4 text-rose-600 shrink-0" />
+                                    <span>आपातकाल का कारण एवं संभावित चिकित्सीय खतरा (Why this is an Emergency):</span>
+                                  </span>
+                                  <p className="leading-relaxed font-medium pl-5.5">
+                                    {result.emergency_reason_hi}
+                                  </p>
+                                </div>
+                              )}
                             </div>
                           )}
 

@@ -69,6 +69,7 @@ class TriageResponse(BaseModel):
     urgency_color: str
     advice_hi: str
     warning_signs_hi: Optional[str] = None
+    emergency_reason_hi: Optional[str] = None
     action_required_hi: str
     sources: List[SourceCitation] = Field(default_factory=list)
     call_108_recommended: bool

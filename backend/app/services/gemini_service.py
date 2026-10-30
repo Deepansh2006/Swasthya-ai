@@ -13,7 +13,7 @@ from backend.app.services.gemini_pool import gemini_pool
 
 class GeminiClinicalService:
     def __init__(self, api_key: Optional[str] = None):
-        self.model_name = "gemini-1.5-flash"
+        self.model_name = "gemini-2.5-flash"
         if api_key:
             gemini_pool.add_key(api_key)
 
@@ -54,6 +54,10 @@ Return ONLY valid JSON without markdown fences.
             # Clean markdown codeblocks if present
             cleaned = re.sub(r"```json\s*", "", raw_json)
             cleaned = re.sub(r"```\s*", "", cleaned).strip()
+            m = re.search(r"(\{.*\})", cleaned, re.DOTALL)
+            if m:
+                cleaned = m.group(1)
+            cleaned = re.sub(r'(?<!\\)\n', ' ', cleaned)
             data = json.loads(cleaned)
             return ExtractedSymptoms(**data)
         except Exception as e:
@@ -92,10 +96,10 @@ Return ONLY valid JSON without markdown fences.
 
         prompt = f"""You are a certified First-Aid and Triage Guidance Assistant grounded in Indian public health guidelines (WHO IMCI & National Health Mission).
 CRITICAL CLINICAL RULES:
-1. NEVER declare a medical diagnosis (do NOT say 'आपको डेंगू है' or 'You have Typhoid').
-2. NEVER prescribe pharmaceutical drug dosages or tablets.
-3. Classify into one of 4 triage levels: EMERGENCY, SEE_DOCTOR_TODAY, SEE_DOCTOR_THIS_WEEK, HOME_CARE.
-4. Keep the advice under 70 words in simple, respectful, rural Hindi (A1/A2 level). Answer any follow-up questions directly using the clinical guidelines and prior context.
+1. Do NOT prescribe pharmaceutical drug dosages or tablets (e.g. 500mg, Paracetamol tablets).
+2. Classify into one of 4 triage levels: EMERGENCY, SEE_DOCTOR_TODAY, SEE_DOCTOR_THIS_WEEK, HOME_CARE.
+3. If this condition is an EMERGENCY or has dangerous red flags, you MUST explain clearly in Hindi WHY this is dangerous and what severe underlying complications or conditions it indicates (e.g., Severe Dehydration, Acute Respiratory Distress / Pneumonia, Acute Myocardial Infarction / Heart Attack, Stroke / Paralysis, Severe Preeclampsia, Snakebite envenomation). The family needs to understand the exact clinical risk so they do not delay hospital transfer.
+4. Keep the advice under 85 words in simple, respectful, empathetic rural Hindi (A1/A2 level). Answer any follow-up questions directly using the clinical guidelines and prior context.
 5. Ground your answer strictly in the provided guideline excerpts.
 
 OFFICIAL GUIDELINES CONTEXT:
@@ -108,7 +112,8 @@ Extracted Info: {slots.model_dump_json()}
 Return a strict JSON object:
 {{
   "urgency_level": "EMERGENCY" | "SEE_DOCTOR_TODAY" | "SEE_DOCTOR_THIS_WEEK" | "HOME_CARE",
-  "advice_hi": "Clear, reassuring Hindi guidance under 70 words answering the patient's question or follow-up",
+  "emergency_reason_hi": "If EMERGENCY or serious, 1-2 sentences in clear Hindi explaining the medical danger and why immediate hospital care is required (e.g. 'यह लक्षण गंभीर निर्जलीकरण / दिल का दौरा / निमोनिया का संकेत हो सकता है...') otherwise null",
+  "advice_hi": "Clear, reassuring Hindi guidance answering the patient's question or interim first-aid steps",
   "warning_signs_hi": "Danger signs to monitor in Hindi",
   "action_required_hi": "Immediate action to take in Hindi",
   "call_108_recommended": boolean,
@@ -119,6 +124,12 @@ Return a strict JSON object:
             raw_json = self._call_gemini_api(prompt)
             cleaned = re.sub(r"```json\s*", "", raw_json)
             cleaned = re.sub(r"```\s*", "", cleaned).strip()
+            # Extract outermost JSON object if model added prose
+            m = re.search(r"(\{.*\})", cleaned, re.DOTALL)
+            if m:
+                cleaned = m.group(1)
+            # Replace raw unescaped newlines inside strings
+            cleaned = re.sub(r'(?<!\\)\n', ' ', cleaned)
             return json.loads(cleaned)
         except Exception as e:
             print(f"[WARN] Gemini grounded triage failed: {e}. Using heuristic triage generator.")
@@ -213,6 +224,7 @@ Return a strict JSON object:
             
             return {
                 "urgency_level": matched_urgency,
+                "emergency_reason_hi": "यह लक्षण शरीर में गंभीर खतरे की स्थिति का संकेत हो सकते हैं, जिसके लिए अस्पताल में तत्काल चिकित्सा आवश्यक है।" if matched_urgency == "EMERGENCY" else None,
                 "advice_hi": f"{clean_advice}। अधिक जानकारी हेतु {top_source.source} ({top_source.protocol}) का पालन करें।",
                 "warning_signs_hi": "यदि हालत बिगड़े, अत्यधिक सुस्ती आए, या उल्टी/तेज बुखार हो, तो बिना देर किए 108 पर कॉल करें।",
                 "action_required_hi": "दिशानिर्देश के अनुसार आवश्यक कदम उठाएं एवं स्वास्थ्य केंद्र से संपर्क करें।",

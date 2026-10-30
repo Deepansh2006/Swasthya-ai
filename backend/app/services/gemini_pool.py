@@ -138,9 +138,9 @@ class GeminiKeyPool:
     def call_gemini(
         self,
         prompt: str,
-        model_name: str = "gemini-1.5-flash",
+        model_name: str = "gemini-2.5-flash",
         temperature: float = 0.1,
-        max_output_tokens: int = 800
+        max_output_tokens: int = 1000
     ) -> Optional[str]:
         """
         Execute API call to Gemini with automatic failover across all keys in pool.

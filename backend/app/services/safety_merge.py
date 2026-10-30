@@ -9,14 +9,15 @@ import re
 from typing import Tuple, Dict, Any, Optional
 from backend.app.models.schemas import UrgencyLevel, URGENCY_RANKS, URGENCY_COLORS, URGENCY_BADGES_HI
 
-# Forbidden regex patterns
+# Forbidden regex patterns (only ban dangerous medication dosages)
 BANNED_DOSAGE_PATTERN = re.compile(
     r"(\b\d+\s*(?:mg|ml|mcg|ग्राम|मिलीग्राम)\b|\b(?:पैरासिटामोल|एंटीबायोटिक|टैबलेट|गोली|खुराक)\s*\d+)",
     re.IGNORECASE
 )
 
+# Soften claims if model states definitive diagnosis rather than possibility
 BANNED_DIAGNOSIS_PATTERN = re.compile(
-    r"(आपको\s+(?:डेंगू|मलेरिया|टाइफाइड|कैंसर|निमोनिया)\s+है|you have (?:dengue|malaria|typhoid|cancer|pneumonia))",
+    r"(निश्चित रूप से आपको\s+(?:कैंसर|ट्यूमर)\s+है)",
     re.IGNORECASE
 )
 
