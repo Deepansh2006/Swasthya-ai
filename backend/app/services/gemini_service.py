@@ -50,14 +50,10 @@ Patient Statement: "{transcript}"
 Return ONLY valid JSON without markdown fences.
 """
         try:
-            raw_json = self._call_gemini_api(prompt)
+            raw_json = self._call_gemini_api(prompt, json_mode=True)
             # Clean markdown codeblocks if present
             cleaned = re.sub(r"```json\s*", "", raw_json)
             cleaned = re.sub(r"```\s*", "", cleaned).strip()
-            m = re.search(r"(\{.*\})", cleaned, re.DOTALL)
-            if m:
-                cleaned = m.group(1)
-            cleaned = re.sub(r'(?<!\\)\n', ' ', cleaned)
             data = json.loads(cleaned)
             return ExtractedSymptoms(**data)
         except Exception as e:
@@ -86,27 +82,28 @@ Return ONLY valid JSON without markdown fences.
         history_str = ""
         if history:
             formatted_turns = []
-            for h in history[-6:]:
-                role = "User" if h.get("role") == "user" else "Assistant"
+            for h in history[-8:]:
+                role = "Patient" if h.get("role") == "user" else "Assistant"
                 txt = h.get("text", "")
                 if txt:
                     formatted_turns.append(f"{role}: {txt}")
             if formatted_turns:
-                history_str = "\nPRIOR CONVERSATION CONTEXT:\n" + "\n".join(formatted_turns) + "\n"
+                history_str = "\nPRIOR CONSULTATION DIALOGUE:\n" + "\n".join(formatted_turns) + "\n"
 
         prompt = f"""You are a certified First-Aid and Triage Guidance Assistant grounded in Indian public health guidelines (WHO IMCI & National Health Mission).
 CRITICAL CLINICAL RULES:
-1. Do NOT prescribe pharmaceutical drug dosages or tablets (e.g. 500mg, Paracetamol tablets).
-2. Classify into one of 4 triage levels: EMERGENCY, SEE_DOCTOR_TODAY, SEE_DOCTOR_THIS_WEEK, HOME_CARE.
-3. If this condition is an EMERGENCY or has dangerous red flags, you MUST explain clearly in Hindi WHY this is dangerous and what severe underlying complications or conditions it indicates (e.g., Severe Dehydration, Acute Respiratory Distress / Pneumonia, Acute Myocardial Infarction / Heart Attack, Stroke / Paralysis, Severe Preeclampsia, Snakebite envenomation). The family needs to understand the exact clinical risk so they do not delay hospital transfer.
-4. Keep the advice under 85 words in simple, respectful, empathetic rural Hindi (A1/A2 level). Answer any follow-up questions directly using the clinical guidelines and prior context.
-5. Ground your answer strictly in the provided guideline excerpts.
+1. DIALOGUE CONTINUITY: If there is PRIOR CONSULTATION DIALOGUE, the current user query is a FOLLOW-UP question regarding the SAME patient case (e.g. asking how to prepare ORS, what diet to give, what precautions to take, or asking about medicine). You MUST answer their specific follow-up question directly within the context of the patient's ongoing condition, rather than resetting or treating it as a disconnected generic query!
+2. Do NOT prescribe pharmaceutical drug dosages or tablets (e.g. 500mg, Paracetamol tablets).
+3. Classify into one of 4 triage levels: EMERGENCY, SEE_DOCTOR_TODAY, SEE_DOCTOR_THIS_WEEK, HOME_CARE. (Note: maintain the existing emergency urgency if the patient is already classified in an emergency state).
+4. If this condition is an EMERGENCY or has dangerous red flags, you MUST explain clearly in Hindi WHY this is dangerous and what severe underlying complications or conditions it indicates (e.g., Severe Dehydration, Acute Respiratory Distress / Pneumonia, Acute Myocardial Infarction / Heart Attack, Stroke / Paralysis, Severe Preeclampsia, Snakebite envenomation).
+5. Keep the advice under 85 words in simple, respectful, empathetic rural Hindi (A1/A2 level).
+6. Ground your answer strictly in the provided guideline excerpts.
 
 OFFICIAL GUIDELINES CONTEXT:
 {context_str}
 {history_str}
-PATIENT REPORT (Current Query):
-Transcript: "{transcript}"
+PATIENT REPORT (Current Turn / Follow-Up):
+User Statement: "{transcript}"
 Extracted Info: {slots.model_dump_json()}
 
 Return a strict JSON object:
@@ -121,23 +118,18 @@ Return a strict JSON object:
 }}
 """
         try:
-            raw_json = self._call_gemini_api(prompt)
+            raw_json = self._call_gemini_api(prompt, json_mode=True)
             cleaned = re.sub(r"```json\s*", "", raw_json)
             cleaned = re.sub(r"```\s*", "", cleaned).strip()
-            # Extract outermost JSON object if model added prose
-            m = re.search(r"(\{.*\})", cleaned, re.DOTALL)
-            if m:
-                cleaned = m.group(1)
-            # Replace raw unescaped newlines inside strings
-            cleaned = re.sub(r'(?<!\\)\n', ' ', cleaned)
             return json.loads(cleaned)
         except Exception as e:
             print(f"[WARN] Gemini grounded triage failed: {e}. Using heuristic triage generator.")
             return self._heuristic_triage_generator(transcript, slots, retrieved_sources, history=history)
 
-    def _call_gemini_api(self, prompt: str) -> str:
+    def _call_gemini_api(self, prompt: str, json_mode: bool = False) -> str:
         """Call Gemini API via multi-key rotating pool with automatic failover."""
-        res = gemini_pool.call_gemini(prompt, model_name=self.model_name)
+        mime = "application/json" if json_mode else None
+        res = gemini_pool.call_gemini(prompt, model_name=self.model_name, response_mime_type=mime)
         if res is None:
             raise RuntimeError("Gemini pool exhausted or no keys configured")
         return res

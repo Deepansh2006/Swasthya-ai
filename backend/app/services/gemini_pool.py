@@ -140,7 +140,8 @@ class GeminiKeyPool:
         prompt: str,
         model_name: str = "gemini-2.5-flash",
         temperature: float = 0.1,
-        max_output_tokens: int = 1000
+        max_output_tokens: int = 1000,
+        response_mime_type: Optional[str] = None
     ) -> Optional[str]:
         """
         Execute API call to Gemini with automatic failover across all keys in pool.
@@ -166,14 +167,18 @@ class GeminiKeyPool:
             current_key_obj.total_requests += 1
 
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={current_key_obj.key}"
+            gen_config = {
+                "temperature": temperature,
+                "maxOutputTokens": max_output_tokens
+            }
+            if response_mime_type:
+                gen_config["responseMimeType"] = response_mime_type
+
             payload = {
                 "contents": [{
                     "parts": [{"text": prompt}]
                 }],
-                "generationConfig": {
-                    "temperature": temperature,
-                    "maxOutputTokens": max_output_tokens
-                }
+                "generationConfig": gen_config
             }
             headers = {"Content-Type": "application/json"}
             data = json.dumps(payload).encode("utf-8")

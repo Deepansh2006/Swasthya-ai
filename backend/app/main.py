@@ -110,18 +110,36 @@ def execute_triage(request: TriageRequest):
         raise HTTPException(status_code=400, detail="Transcript cannot be empty.")
 
     # =========================================================================
-    # STEP 1: DETERMINISTIC RED-FLAG SAFETY CIRCUIT
+    # STEP 1: CONTEXTUAL QUERY ACCUMULATION FOR FOLLOW-UPS
     # =========================================================================
+    # Check if this is a follow-up turn in an ongoing consultation
+    is_followup = turn_number > 1 or bool(request.history)
+    prior_user_queries = [h.get("text", "") for h in (request.history or []) if h.get("role") == "user"]
+    primary_initial_symptom = prior_user_queries[0] if prior_user_queries else ""
+
+    # =========================================================================
+    # STEP 2: DETERMINISTIC RED-FLAG SAFETY CIRCUIT
+    # =========================================================================
+    # If it is a follow-up, evaluate both current transcript and accumulated context
     is_emergency, rule_match = rule_engine.evaluate(transcript)
+    if not is_emergency and is_followup and primary_initial_symptom:
+        # Check if initial condition was already a hard emergency
+        init_emergency, init_rule_match = rule_engine.evaluate(primary_initial_symptom)
+        if init_emergency and init_rule_match:
+            is_emergency = True
+            rule_match = init_rule_match
+
     rule_urgency = UrgencyLevel.EMERGENCY if (is_emergency and rule_match) else None
 
     # =========================================================================
-    # STEP 2: STRUCTURED CLINICAL SLOT EXTRACTION
+    # STEP 3: STRUCTURED CLINICAL SLOT EXTRACTION
     # =========================================================================
-    slots = gemini_service.extract_symptoms(transcript)
+    # Combine initial symptom with follow-up answer for comprehensive slot-filling
+    combined_transcript_for_slots = f"{primary_initial_symptom}। {transcript}" if (is_followup and primary_initial_symptom) else transcript
+    slots = gemini_service.extract_symptoms(combined_transcript_for_slots)
 
     # =========================================================================
-    # STEP 3: CONVERSATIONAL SLOT-FILLING (FOLLOW-UP LOOP - MAX 3 TURNS)
+    # STEP 4: CONVERSATIONAL SLOT-FILLING (FOLLOW-UP LOOP - MAX 3 TURNS)
     # =========================================================================
     follow_up_question = None
     if not is_emergency and turn_number < 3 and slots.missing_critical_fields:
@@ -132,10 +150,11 @@ def execute_triage(request: TriageRequest):
             follow_up_question = "क्या गर्दन में अकड़न, सांस लेने में तकलीफ या तेज उल्टी भी है?"
 
     # =========================================================================
-    # STEP 4: HYBRID RAG RETRIEVAL (WHO IMCI & NHM GUIDELINES)
+    # STEP 5: HYBRID RAG RETRIEVAL (WHO IMCI & NHM GUIDELINES)
     # =========================================================================
-    query = f"{transcript} {slots.primary_symptom} {' '.join(slots.danger_signs_detected)}"
-    retrieved_sources = rag_service.retrieve(query, top_k=3)
+    # For follow-ups, anchor retrieval with initial complaint + follow-up question
+    rag_query = f"{primary_initial_symptom} {transcript} {slots.primary_symptom} {' '.join(slots.danger_signs_detected)}"
+    retrieved_sources = rag_service.retrieve(rag_query, top_k=3)
 
     # If deterministic rule matched, ensure rule protocol is at top of sources
     if rule_match:
@@ -150,7 +169,7 @@ def execute_triage(request: TriageRequest):
         retrieved_sources = [rule_source] + [s for s in retrieved_sources if s.id != rule_source.id][:2]
 
     # =========================================================================
-    # STEP 5: GROUNDED CLINICAL REASONING (WITH CONVERSATIONAL MEMORY)
+    # STEP 6: GROUNDED CLINICAL REASONING (WITH CONVERSATIONAL MEMORY)
     # =========================================================================
     llm_output = gemini_service.generate_grounded_triage(
         transcript, slots, retrieved_sources, history=request.history
