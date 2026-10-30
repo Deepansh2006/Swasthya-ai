@@ -1,0 +1,5 @@
+{
+  "total_chunks": 67,
+  "dim": 512,
+  "has_faiss": true
+}

@@ -1,0 +1,702 @@
+[
+  {
+    "case_id": "VIG_EMERG_001",
+    "transcript_hi": "मेरे 3 साल के बेटे की पसली चल रही है और सांस लेने में भारी तकलीफ हो रही है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Severe Pneumonia",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_002",
+    "transcript_hi": "नवजात शिशु का शरीर बिल्कुल ठंडा पड़ गया है और वह सांस तेजी से ले रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM HBNC Neonatal Hypothermia",
+    "category": "neonatal"
+  },
+  {
+    "case_id": "VIG_EMERG_003",
+    "transcript_hi": "बच्चा सुबह से दूध नहीं पी रहा है और जो भी खाता है सब उल्टी कर देता है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI General Danger Sign",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_004",
+    "transcript_hi": "बच्चे को तेज बुखार के साथ दौरे और झटके पड़ रहे हैं",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Febrile Convulsions",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_005",
+    "transcript_hi": "अस्पताल ले जा रहे हैं, 4 साल का बच्चा अत्यधिक सुस्त और बेहोश हो गया है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Lethargy/Unconscious",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_006",
+    "transcript_hi": "सीने में बहुत तेज दबाव और दर्द है जो बाईं बांह में फैल रहा है और पसीना आ रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Acute Myocardial Infarction",
+    "category": "adult_cardio"
+  },
+  {
+    "case_id": "VIG_EMERG_007",
+    "transcript_hi": "अचानक पिताजी का मुंह टेढ़ा हो गया है और आवाज लड़खड़ा रही है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "ICMR Stroke FAST Criteria",
+    "category": "adult_neuro"
+  },
+  {
+    "case_id": "VIG_EMERG_008",
+    "transcript_hi": "एक तरफ का हाथ और पैर अचानक सुन्न और कमजोर हो गया है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "ICMR Stroke Paralysis",
+    "category": "adult_neuro"
+  },
+  {
+    "case_id": "VIG_EMERG_009",
+    "transcript_hi": "गर्भवती महिला को 7वें महीने में अचानक बहुत तेज खून बहने लगा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Maternal Antepartum Hemorrhage",
+    "category": "maternal"
+  },
+  {
+    "case_id": "VIG_EMERG_010",
+    "transcript_hi": "गर्भवती को तेज सिरदर्द के साथ आंखों से धुंधला दिख रहा है और चेहरे पर सूजन है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Pre-eclampsia Danger Sign",
+    "category": "maternal"
+  },
+  {
+    "case_id": "VIG_EMERG_011",
+    "transcript_hi": "खेत में काम करते समय जहरीले सांप ने पैर पर काट लिया है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Snakebite Protocol",
+    "category": "trauma_toxic"
+  },
+  {
+    "case_id": "VIG_EMERG_012",
+    "transcript_hi": "सड़क दुर्घटना के बाद सिर में चोट लगी और अत्यधिक खून बह रहा है बंद नहीं हो रहा",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Severe Hemorrhage",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_EMERG_013",
+    "transcript_hi": "बच्चे की सांस लेते समय जोर की आवाज और घरघराहट आ रही है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Stridor/Severe Pneumonia",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_014",
+    "transcript_hi": "नवजात शिशु की नाभि से लगातार खून और मवाद बह रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM HBNC Umbilical Sepsis",
+    "category": "neonatal"
+  },
+  {
+    "case_id": "VIG_EMERG_015",
+    "transcript_hi": "बुजुर्ग को अचानक सांस लेने में अत्यधिक कठिनाई और सीने में भारीपन है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Acute Coronary / Pulmonary Edema",
+    "category": "adult_cardio"
+  },
+  {
+    "case_id": "VIG_EMERG_016",
+    "transcript_hi": "बच्चे को पतले दस्त हैं और आंखें बहुत ज्यादा अंदर धंस गई हैं, त्वचा 2 सेकंड में नहीं लौट रही",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Severe Dehydration",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_017",
+    "transcript_hi": "गर्भवती महिला को दौरे पड़ रहे हैं और वह होश खो बैठी है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Eclampsia Emergency",
+    "category": "maternal"
+  },
+  {
+    "case_id": "VIG_EMERG_018",
+    "transcript_hi": "युवक ने गलती से कीटनाशक जहर खा लिया है और उल्टी कर रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Acute Poisoning",
+    "category": "toxicology"
+  },
+  {
+    "case_id": "VIG_EMERG_019",
+    "transcript_hi": "छाती में असहनीय जलन और दर्द के साथ ठंडा पसीना और चक्कर आ रहे हैं",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Angina / Infarction",
+    "category": "adult_cardio"
+  },
+  {
+    "case_id": "VIG_EMERG_020",
+    "transcript_hi": "बच्चे को 104 डिग्री बुखार है और गर्दन बिल्कुल अकड़ गई है मुड़ नहीं रही",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Meningitis / Severe Febrile",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_021",
+    "transcript_hi": "नवजात शिशु की हथेलियां और पैर के तलवे बिल्कुल पीले पड़ गए हैं",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Neonatal Severe Jaundice",
+    "category": "neonatal"
+  },
+  {
+    "case_id": "VIG_EMERG_022",
+    "transcript_hi": "सांप के काटने के बाद पलकें झुक रही हैं और सांस लेने में दम घुट रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Neurotoxic Snakebite",
+    "category": "toxicology"
+  },
+  {
+    "case_id": "VIG_EMERG_023",
+    "transcript_hi": "दुर्घटना में हाथ कट गया है और तेज फव्वारे जैसा खून बह रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Arterial Bleeding",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_EMERG_024",
+    "transcript_hi": "गर्भवती को अचानक पेट में बहुत तेज असहनीय दर्द और पानी की थैली फट गई है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Obstructed Labor",
+    "category": "maternal"
+  },
+  {
+    "case_id": "VIG_EMERG_025",
+    "transcript_hi": "बच्चे को लगातार झटके आ रहे हैं और आंखें ऊपर चढ़ गई हैं",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Status Epilepticus",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_026",
+    "transcript_hi": "बुजुर्ग व्यक्ति अचानक बेहोश होकर जमीन पर गिर पड़े और कोई प्रतिक्रिया नहीं दे रहे",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Sudden Unconsciousness",
+    "category": "adult_neuro"
+  },
+  {
+    "case_id": "VIG_EMERG_027",
+    "transcript_hi": "छाती में भारी दबाव महसूस हो रहा है जैसे कोई पत्थर रख दिया हो",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Atypical Chest Pain",
+    "category": "adult_cardio"
+  },
+  {
+    "case_id": "VIG_EMERG_028",
+    "transcript_hi": "शिशु सांस लेते समय पसली अंदर खींच रहा है और नीला पड़ रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "WHO IMCI Cyanosis / Severe Pneumonia",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_EMERG_029",
+    "transcript_hi": "साइकिल से गिरने के बाद बच्चे के कान और नाक से खून बह रहा है",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "NHM Basilar Skull Fracture",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_EMERG_030",
+    "transcript_hi": "दादी जी की जुबान लड़खड़ा गई है और कुछ भी बोल नहीं पा रही हैं",
+    "expected_urgency": "EMERGENCY",
+    "reference_protocol": "ICMR Acute Aphasia / Stroke",
+    "category": "adult_neuro"
+  },
+  {
+    "case_id": "VIG_TODAY_001",
+    "transcript_hi": "3 साल के बच्चे को 4 दिन से तेज बुखार है और कम नहीं हो रहा",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Persistent Fever",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_002",
+    "transcript_hi": "बच्चे को कल से 6-7 बार पतले दस्त हुए हैं और वह बहुत प्यासा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Some Dehydration",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_003",
+    "transcript_hi": "कान में बहुत तेज दर्द है और अंदर से पीला मवाद बह रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Acute Otitis Media",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_004",
+    "transcript_hi": "पेशाब करते समय बहुत तेज जलन और दर्द हो रहा है और बार-बार जाना पड़ रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM UTI Assessment",
+    "category": "adult"
+  },
+  {
+    "case_id": "VIG_TODAY_005",
+    "transcript_hi": "आंखें बहुत लाल हैं, पलकें सूज गई हैं और पीला चिपचिपा पानी निकल रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Acute Conjunctivitis",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_TODAY_006",
+    "transcript_hi": "बच्चे को 3 दिन से खांसी है और सांस सामान्य से तेज चल रही है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Non-severe Pneumonia",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_007",
+    "transcript_hi": "पेट के निचले हिस्से में तेज दर्द है और साथ में उल्टी आ रही है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Acute Abdomen Assessment",
+    "category": "adult"
+  },
+  {
+    "case_id": "VIG_TODAY_008",
+    "transcript_hi": "डायबिटीज के मरीज के पैर के अंगूठे में गहरा घाव हो गया है और लाल हो रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Diabetic Foot Infection",
+    "category": "adult"
+  },
+  {
+    "case_id": "VIG_TODAY_009",
+    "transcript_hi": "महिला को पेशाब में खून आ रहा है और कमर में एक तरफ तेज दर्द है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Renal Colic / Infection",
+    "category": "adult"
+  },
+  {
+    "case_id": "VIG_TODAY_010",
+    "transcript_hi": "बच्चे के पूरे शरीर पर लाल चकत्ते निकल आए हैं और साथ में बुखार है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Measles / Rash Assessment",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_011",
+    "transcript_hi": "2 दिन से लगातार दस्त और उल्टी है, लेकिन बच्चा पानी पी पा रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Moderate Dehydration",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_012",
+    "transcript_hi": "बुजुर्ग को चक्कर आ रहे हैं और खड़े होने पर अंधेरा छा रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Postural Hypotension / Vertigo",
+    "category": "elderly"
+  },
+  {
+    "case_id": "VIG_TODAY_013",
+    "transcript_hi": "चेहरे पर गर्म तेल गिर गया है और त्वचा पर बड़े फफोले पड़ गए हैं",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Second Degree Burn",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_TODAY_014",
+    "transcript_hi": "गले में बहुत तेज दर्द है, कुछ भी निगलने में तकलीफ है और टॉन्सिल सूजे हैं",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Acute Tonsillitis / Pharyngitis",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_TODAY_015",
+    "transcript_hi": "कुत्ते ने पैर पर खरोंच दिया है और खून की हल्की बूंद निकली है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Category 2 Dog Bite / Rabies",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_TODAY_016",
+    "transcript_hi": "बच्चे का वजन कई महीनों से घट रहा है और हाथ-पैर बहुत पतले हो गए हैं",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Moderate Malnutrition",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_017",
+    "transcript_hi": "महिला को स्तन में बहुत दर्द, लाली और छूने पर तेज गर्म लग रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Mastitis in Lactation",
+    "category": "maternal"
+  },
+  {
+    "case_id": "VIG_TODAY_018",
+    "transcript_hi": "युवक को अचानक तेज ठंड लगकर कंपकंपी के साथ तेज बुखार आया है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Malaria Suspicion",
+    "category": "infectious"
+  },
+  {
+    "case_id": "VIG_TODAY_019",
+    "transcript_hi": "दांत में असहनीय दर्द है और मसूड़े में बड़ी सूजन आ गई है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Dental Abscess",
+    "category": "dental"
+  },
+  {
+    "case_id": "VIG_TODAY_020",
+    "transcript_hi": "बच्चा बार-बार रोते हुए कान को खींच रहा है और चिड़चिड़ा हो रहा है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Acute Ear Pain",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_021",
+    "transcript_hi": "हाथ की कलाई पर गहरी खरोंच है और आस-पास सूजन व लालिमा बढ़ रही है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Cellulitis / Wound Infection",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_TODAY_022",
+    "transcript_hi": "रोगी को 3 दिन से पीलिया के लक्षण दिख रहे हैं, आंखें और पेशाब गहरा पीला है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Acute Hepatitis / Jaundice",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_TODAY_023",
+    "transcript_hi": "गर्भवती महिला को पैरों में बहुत अधिक सूजन और चलने में भारीपन है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Pregnancy Monitoring",
+    "category": "maternal"
+  },
+  {
+    "case_id": "VIG_TODAY_024",
+    "transcript_hi": "बच्चे को दस्त में खून के रेशे आ रहे हैं",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Dysentery Protocol",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_025",
+    "transcript_hi": "सीढ़ियों से फिसलने के बाद टखने में बहुत तेज दर्द और सूजन है पैर जमीन पर नहीं रख पा रहे",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Ankle Sprain / Fracture",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_TODAY_026",
+    "transcript_hi": "4 दिन से सूखी खांसी है और छाती में सांस लेते समय घरघराहट जैसी आवाज है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Acute Bronchitis",
+    "category": "respiratory"
+  },
+  {
+    "case_id": "VIG_TODAY_027",
+    "transcript_hi": "बुखार के साथ दोनों जोड़ों और घुटनों में तेज दर्द व अकड़न है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Chikungunya / Dengue evaluation",
+    "category": "infectious"
+  },
+  {
+    "case_id": "VIG_TODAY_028",
+    "transcript_hi": "लोहे की जंग लगी कील पैर में चुभ गई है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Tetanus Prophylaxis / Puncture Wound",
+    "category": "trauma"
+  },
+  {
+    "case_id": "VIG_TODAY_029",
+    "transcript_hi": "बच्चा सुस्त तो नहीं है पर कुछ भी खाने पर तुरंत उल्टी की शिकायत करता है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "WHO IMCI Persistent Vomiting",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_TODAY_030",
+    "transcript_hi": "वृद्ध व्यक्ति की शुगर 350 पहुंच गई है और बहुत ज्यादा प्यास लग रही है",
+    "expected_urgency": "SEE_DOCTOR_TODAY",
+    "reference_protocol": "NHM Hyperglycemia Check",
+    "category": "chronic"
+  },
+  {
+    "case_id": "VIG_WEEK_001",
+    "transcript_hi": "मुझे 3 हफ्ते से ज्यादा से लगातार खांसी है और शाम को हल्का बुखार रहता है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NTEP Pulmonary TB Screening",
+    "category": "respiratory"
+  },
+  {
+    "case_id": "VIG_WEEK_002",
+    "transcript_hi": "2 महीने से दोनों घुटनों में दर्द है और चलने-फिरने में चटकने की आवाज आती है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Osteoarthritis Screening",
+    "category": "chronic"
+  },
+  {
+    "case_id": "VIG_WEEK_003",
+    "transcript_hi": "त्वचा पर सफेद और हल्के रंग का सुन्न दाग हो गया है जहां छूने पर पता नहीं चलता",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Leprosy Early Detection",
+    "category": "dermatology"
+  },
+  {
+    "case_id": "VIG_WEEK_004",
+    "transcript_hi": "पिछले कुछ महीनों से वजन बिना किसी कारण के 5 किलो घट गया है और भूख नहीं लगती",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Chronic Illness Workup",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_WEEK_005",
+    "transcript_hi": "गर्दन पर एक छोटी सी गांठ है जो पिछले एक महीने से धीरे-धीरे बढ़ रही है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Lymphadenopathy Screening",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_WEEK_006",
+    "transcript_hi": "आंखों से दूर का धुंधला दिखाई देता है और रात में गाड़ी चलाने में दिक्कत होती है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM NPCB Refractive Error / Cataract",
+    "category": "ophthalmology"
+  },
+  {
+    "case_id": "VIG_WEEK_007",
+    "transcript_hi": "दादी जी को सुनने में परेशानी हो रही है और तेज आवाज में बोलना पड़ता है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Presbyacusis / Hearing Loss",
+    "category": "elderly"
+  },
+  {
+    "case_id": "VIG_WEEK_008",
+    "transcript_hi": "पीठ के निचले हिस्से में पिछले एक महीने से हल्का-हल्का दर्द बना रहता है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Chronic Low Back Pain",
+    "category": "musculoskeletal"
+  },
+  {
+    "case_id": "VIG_WEEK_009",
+    "transcript_hi": "हाथों की उंगलियों में सुबह उठने पर आधे घंटे तक अकड़न रहती है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Rheumatoid Screening",
+    "category": "musculoskeletal"
+  },
+  {
+    "case_id": "VIG_WEEK_010",
+    "transcript_hi": "चमड़ी पर गोल-गोल दाद और खुजली है जो कई दिनों से ठीक नहीं हो रही",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Tinea / Fungal Skin Infection",
+    "category": "dermatology"
+  },
+  {
+    "case_id": "VIG_WEEK_011",
+    "transcript_hi": "मुंह के अंदर सफेद छाला है जो 3 हफ्ते से ठीक नहीं हो रहा है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Oral Pre-cancerous Lesion",
+    "category": "dental"
+  },
+  {
+    "case_id": "VIG_WEEK_012",
+    "transcript_hi": "शौच करते समय हल्का सा खून और मस्से जैसा बाहर महसूस होता है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Hemorrhoids / Piles Screening",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_WEEK_013",
+    "transcript_hi": "पिछले कई हफ्तों से बहुत ज्यादा थकान रहती है और सीढ़ियां चढ़ने पर सांस फूलती है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Anemia Screening",
+    "category": "hematology"
+  },
+  {
+    "case_id": "VIG_WEEK_014",
+    "transcript_hi": "पैरों के तलवों में रात को सुइयां चुभने जैसी जलन होती है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Diabetic Peripheral Neuropathy",
+    "category": "chronic"
+  },
+  {
+    "case_id": "VIG_WEEK_015",
+    "transcript_hi": "बच्चे के सिर में जूं और रूसी की वजह से बहुत ज्यादा खुजली है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Pediculosis Protocol",
+    "category": "pediatric"
+  },
+  {
+    "case_id": "VIG_WEEK_016",
+    "transcript_hi": "हाथ की त्वचा बहुत ज्यादा रूखी होकर फट रही है और पपड़ी जम रही है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Eczema / Xerosis",
+    "category": "dermatology"
+  },
+  {
+    "case_id": "VIG_WEEK_017",
+    "transcript_hi": "रात में सोते समय बहुत तेज खर्राटे आते हैं और दिन में नींद आती है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Obstructive Sleep Apnea",
+    "category": "respiratory"
+  },
+  {
+    "case_id": "VIG_WEEK_018",
+    "transcript_hi": "नाखून बहुत पतले और चम्मच जैसे मुड़ रहे हैं",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Koilonychia / Iron Deficiency",
+    "category": "hematology"
+  },
+  {
+    "case_id": "VIG_WEEK_019",
+    "transcript_hi": "उम्र 50 साल है और रूटीन बीपी और ब्लड प्रेशर की जांच करवानी है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM NCD Routine Screening",
+    "category": "preventive"
+  },
+  {
+    "case_id": "VIG_WEEK_020",
+    "transcript_hi": "गर्भवती महिला को तीसरे महीने का नियमित स्वास्थ्य चेकअप करवाना है",
+    "expected_urgency": "SEE_DOCTOR_THIS_WEEK",
+    "reference_protocol": "NHM Antenatal Care Routine (ANC)",
+    "category": "maternal"
+  },
+  {
+    "case_id": "VIG_HOME_001",
+    "transcript_hi": "आज सुबह से हल्की छींकें आ रही हैं और नाक से पानी बह रहा है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Common Cold Home Protocol",
+    "category": "viral_respiratory"
+  },
+  {
+    "case_id": "VIG_HOME_002",
+    "transcript_hi": "सब्जी काटते समय उंगली पर हल्का सा कट लग गया है, थोड़ा सा खून आया था",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Minor First Aid Abrasion",
+    "category": "first_aid"
+  },
+  {
+    "case_id": "VIG_HOME_003",
+    "transcript_hi": "कल शाम से हल्का सा गले में खराश महसूस हो रहा है, बुखार नहीं है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Mild Pharyngitis Home Care",
+    "category": "respiratory"
+  },
+  {
+    "case_id": "VIG_HOME_004",
+    "transcript_hi": "क्रिकेट खेलते समय घुटने पर हल्की सी खरोंच आई है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Superficial Scratch First Aid",
+    "category": "first_aid"
+  },
+  {
+    "case_id": "VIG_HOME_005",
+    "transcript_hi": "आज दिन भर धूप में काम करने के बाद सिर में हल्का दर्द और थकान है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Mild Dehydration / Sun Fatigue",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_HOME_006",
+    "transcript_hi": "कल रात भारी खाना खाने के बाद पेट में हल्की गैस और भारीपन लग रहा है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Mild Dyspepsia Home Care",
+    "category": "gastrointestinal"
+  },
+  {
+    "case_id": "VIG_HOME_007",
+    "transcript_hi": "जिम में कसरत करने के बाद जांघ की मांसपेशियों में हल्का खिंचाव और दर्द है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Post-exercise Soreness",
+    "category": "musculoskeletal"
+  },
+  {
+    "case_id": "VIG_HOME_008",
+    "transcript_hi": "मौसम बदलने के कारण हल्की सूखी खांसी आ रही है पर कोई तकलीफ नहीं है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Mild Viral Cough",
+    "category": "respiratory"
+  },
+  {
+    "case_id": "VIG_HOME_009",
+    "transcript_hi": "मच्छर के काटने से हाथ पर लाल दाना हो गया है और थोड़ी खुजली है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Insect Bite Local Reaction",
+    "category": "dermatology"
+  },
+  {
+    "case_id": "VIG_HOME_010",
+    "transcript_hi": "नींद पूरी न होने की वजह से आंखें भारी लग रही हैं और हल्का सिरदर्द है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Tension / Fatigue Headache",
+    "category": "lifestyle"
+  },
+  {
+    "case_id": "VIG_HOME_011",
+    "transcript_hi": "ज्यादा बोलने की वजह से गला थोड़ा सा बैठ गया है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Vocal Strain Home Care",
+    "category": "lifestyle"
+  },
+  {
+    "case_id": "VIG_HOME_012",
+    "transcript_hi": "गर्म चाय पीने से जीभ पर हल्की जलन महसूस हो रही है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Mild Thermal Irritation",
+    "category": "first_aid"
+  },
+  {
+    "case_id": "VIG_HOME_013",
+    "transcript_hi": "ठंडे पानी से नहाने के बाद थोड़ी सी कंपकंपी हुई थी, अब सब सामान्य है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Transient Chilling",
+    "category": "lifestyle"
+  },
+  {
+    "case_id": "VIG_HOME_014",
+    "transcript_hi": "उंगली के पोर में छोटी सी लकड़ी की फांस चुभ गई थी जो निकाल दी है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Splinter Removal First Aid",
+    "category": "first_aid"
+  },
+  {
+    "case_id": "VIG_HOME_015",
+    "transcript_hi": "दोपहर में भूख लगने पर पेट में हल्का सा गुड़गुड़ाहट और मरोड़ हुआ था",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Normal Hunger Cramps",
+    "category": "gastrointestinal"
+  },
+  {
+    "case_id": "VIG_HOME_016",
+    "transcript_hi": "सफर में बस से आने के बाद हल्का जी मिचला रहा था, अब आराम है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Motion Sickness Recovery",
+    "category": "lifestyle"
+  },
+  {
+    "case_id": "VIG_HOME_017",
+    "transcript_hi": "हल्की सी ठंड लग रही थी पर थर्मामीटर में तापमान 98.4 सामान्य आया है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Normal Temperature Monitoring",
+    "category": "general"
+  },
+  {
+    "case_id": "VIG_HOME_018",
+    "transcript_hi": "जूता थोड़ा तंग होने के कारण एड़ी पर हल्का लाल निशान पड़ गया है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Shoe Bite First Aid",
+    "category": "first_aid"
+  },
+  {
+    "case_id": "VIG_HOME_019",
+    "transcript_hi": "दिन भर कंप्यूटर पर काम करने से आंखों में थोड़ा सूखापन लग रहा है",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Digital Eye Strain Home Care",
+    "category": "lifestyle"
+  },
+  {
+    "case_id": "VIG_HOME_020",
+    "transcript_hi": "हल्का सा सामान्य जुकाम है, घर पर गर्म पानी और तुलसी की चाय पी रहे हैं",
+    "expected_urgency": "HOME_CARE",
+    "reference_protocol": "NHM Viral Cold Conservative Care",
+    "category": "viral_respiratory"
+  }
+]

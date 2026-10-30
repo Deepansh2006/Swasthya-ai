@@ -1,0 +1,42 @@
+==============================================================================
+   VOICE-FIRST RURAL HEALTH TRIAGE ASSISTANT (HINDI) - STARTUP COMMANDS
+==============================================================================
+
+Option 1: Run Backend & Frontend Separately (Recommended for Development)
+-------------------------------------------------------------------------
+
+[Terminal 1 - Backend (FastAPI)]:
+1. Open PowerShell or Command Prompt in the project root:
+   cd c:\Users\Dell\OneDrive\Desktop\hindi-coms
+
+2. Run the FastAPI server:
+   python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+
+   -> Backend URL: http://127.0.0.1:8000
+   -> API Health Check: http://127.0.0.1:8000/api/health
+   -> Swagger API Docs: http://127.0.0.1:8000/docs
+
+
+[Terminal 2 - Frontend (Vite + React)]:
+1. Open a second PowerShell or Command Prompt:
+   cd c:\Users\Dell\OneDrive\Desktop\hindi-coms\web-ui
+
+2. (First time only, if dependencies not installed):
+   npm install
+
+3. Start the Vite dev server:
+   npm run dev
+
+   -> Frontend UI: http://localhost:5173/
+
+
+-------------------------------------------------------------------------
+Option 2: One-Click Python Launcher (Serves Frontend + Backend together)
+-------------------------------------------------------------------------
+Run from the root directory:
+   python run_app.py
+
+-> Automatically verifies knowledge base indices, starts Uvicorn,
+   and opens http://localhost:8000 in your default browser.
+==============================================================================
+
