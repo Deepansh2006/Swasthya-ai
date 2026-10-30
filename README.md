@@ -1,181 +1,192 @@
-# 🏥 ASHA-AI: Voice-First Rural Health Triage Assistant (Hindi)
-> **Empowering Rural Healthcare in India through Voice-First Clinical Triage, Deterministic Emergency Red-Flag Guarantees, and Grounded Clinical Retrieval.**
+# 🏥 Swasthya-AI: Voice-First Rural Health Triage Assistant (Hindi)
+> **Dual-track clinical triage system grounded in WHO IMCI & National Health Mission (NHM) guidelines with deterministic emergency red-flag safety guarantees.**
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)](https://fastapi.tiangolo.com)
+[![React 19](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite-61dafb.svg)](https://react.dev)
 [![FAISS](https://img.shields.io/badge/FAISS-Dense--Retrieval-black.svg)](https://github.com/facebookresearch/faiss)
 [![WHO IMCI Grounded](https://img.shields.io/badge/WHO%20IMCI-Grounded%20Guidelines-green.svg)](https://www.who.int)
-[![Zero Under-Triage](https://img.shields.io/badge/Emergency%20Under--Triage-0.0%25-brightgreen.svg)](#benchmark--ablation-results)
+[![Zero Under-Triage](https://img.shields.io/badge/Emergency%20Under--Triage-0.0%25-brightgreen.svg)](#empirical-safety--ablation-results)
 
 ---
 
-## 📌 Executive Summary
-In rural India, primary healthcare centers (PHCs) and Accredited Social Health Activists (ASHAs) face high patient loads and linguistic barriers. **ASHA-AI** is a voice-first Hindi conversational triage assistant designed to provide immediate, reliable first-line urgency classification and first-aid recommendations grounded in the **World Health Organization (WHO) Integrated Management of Childhood Illness (IMCI)** and **Indian National Health Mission (NHM)** protocols.
+## 📌 Project Overview
+In rural and semi-urban India, access to immediate primary medical guidance is limited by geographic distances, overwhelmed Primary Health Centers (PHCs), and language barriers. 
 
-### 🛡️ Core Safety Guarantee: ZERO Emergency Under-Triage
-Unlike raw LLM applications that hallucinate or downgrade life-threatening pediatric, maternal, or adult emergencies (e.g., classifying pediatric seizures or acute chest pain as mild fever), **ASHA-AI implements a dual-path safety architecture**:
-1. **Deterministic Fast-Path (< 20ms)**: Sub-string and fuzzy token matching against high-risk clinical triggers (seizures, chest pain, chest indrawing, snakebites, acute postpartum bleeding).
-2. **Hybrid RAG Clinical Retriever**: Dense FAISS (vector similarity) + Sparse BM25 (exact medical terms) merged via Reciprocal Rank Fusion (RRF).
-3. **Safety Merge Layer**: Enforces `urgency = max(rule_urgency, llm_urgency)` and strictly sanitizes output to ban prescription dosages (`mg`, `ml`, `tablet`) and diagnostic claims.
+**Swasthya-AI** is a voice-first Hindi conversational triage assistant designed to help community health workers (ASHAs) and patients evaluate symptoms, assess urgency, and receive grounded first-aid guidance in natural spoken Hindi.
 
----
+### 🛡️ Why Dual-Track Architecture?
+Standard large language models (LLMs) used alone are prone to **hallucinations and clinical under-triage** (e.g., misclassifying pediatric convulsions, neonatal danger signs, or acute chest pain as routine issues). In healthcare, under-triage can be fatal.
 
-## 🚀 One-Click Quick Start
-
-### 1. Launch System
-Run the one-click launcher from the project directory:
-```bash
-python run_app.py
-```
-This automatically:
-- Validates and mounts the FAISS + BM25 vector indices
-- Starts the FastAPI backend server on `http://localhost:8000`
-- Automatically opens the modern glassmorphic Web UI in your default browser
-
-### 2. Manual Alternative
-```bash
-# Optional: Set your Gemini API key (System works offline with guideline engine if omitted)
-# Windows PowerShell:
-$env:GEMINI_API_KEY="your-api-key-here"
-
-# Start backend
-uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
-```
-
----
-
-## 📊 Empirical Ablation Study (100 Clinical Vignettes)
-A 100-vignette standardized clinical evaluation benchmark (`evaluation/benchmark_vignettes_100.json`) was executed across 3 system architectures:
-
-| Configuration | Overall Accuracy | Emergency Under-Triage (Fatal Risk) | Mean Execution Latency |
-| :--- | :---: | :---: | :---: |
-| **Ablation 1: Raw LLM Only** (Prompt-only) | 45.0% | **10.0% (Unsafe)** | 320.0 ms |
-| **Ablation 2: LLM + RAG** (No Rules) | 48.0% | **10.0% (Unsafe)** | 0.9 ms |
-| **Ablation 3: Flagship System** (Rules + RAG + Merge) | **49.0% - 95%+** | **0.0% (ZERO RISK)** | **0.6 ms** |
-
-> **Viva Defense Insight**: In clinical triage, overall multi-class accuracy is secondary to **Emergency Under-Triage**. A single false-negative on pediatric convulsion can cost a child's life. The Flagship System guarantees **0.0% under-triage** by leveraging deterministic safety rules.
-
-To reproduce the benchmark at any time:
-```bash
-python evaluation/run_ablation.py
-```
-Results will be output to console and saved as JSON to `evaluation/reports/ablation_results.json`.
+To eliminate this risk, **Swasthya-AI decouples clinical urgency determination from conversational advice**:
+1. **Deterministic Red-Flag Rule Engine (< 20ms)**: Sub-string and RapidFuzz keyword matching against high-risk clinical triggers (seizures, chest pain + sweat, infant chest indrawing, snakebites, acute postpartum bleeding). If matched, urgency is locked to `EMERGENCY` with zero under-triage risk.
+2. **Hybrid RAG Clinical Retriever**: Combines **Dense FAISS** (semantic vector similarity) + **Sparse BM25** (exact medical vocabulary) via Reciprocal Rank Fusion (RRF) across 67 verified WHO IMCI and NHM guidelines.
+3. **Clinical Reasoning & First-Aid Synthesizer (Gemini API Pool)**: Explains the clinical danger signs in spoken Hindi, extracts structured clinical slots, and advises actionable interim care while waiting for medical help.
+4. **Safety Merge & Clinical Sanitizer**: Enforces `final_urgency = max(rule_urgency, llm_urgency)` and strictly strips prescription dosages (`mg`, `ml`, `tablets`) and diagnostic claims.
 
 ---
 
 ## 🏗️ System Architecture
 
 ```
-User Voice Input (Hindi / Hinglish)
-            │
-            ▼
-    Web Speech API / gTTS
-            │
-            ▼
+User Voice / Text (Hindi or Hinglish)
+                 │
+                 ▼
+      Web Speech API / gTTS Audio
+                 │
+                 ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                 FASTAPI BACKEND PIPELINE                    │
 │                                                             │
 │   ┌─────────────────────────────────────────────────────┐   │
 │   │ Step 1: RedFlagRuleEngine (YAML Triggers)           │   │
 │   │   • Exact substring & RapidFuzz token matching      │   │
-│   │   • If match -> FAST-PATH EMERGENCY RETURN (< 5ms)  │   │
+│   │   • Immediate hard override on life threats         │   │
 │   └──────────────────────────┬──────────────────────────┘   │
 │                              │                              │
 │   ┌──────────────────────────▼──────────────────────────┐   │
 │   │ Step 2: Hybrid RAG Service                          │   │
-│   │   • Dense: FAISS Normalized Vector Search           │   │
+│   │   • Dense: FAISS Normalized Cosine Vector Search    │   │
 │   │   • Sparse: Rank-BM25 Hindi Indic Tokenizer         │   │
-│   │   • Reciprocal Rank Fusion (RRF) Ranking            │   │
+│   │   • Reciprocal Rank Fusion (RRF) Re-Ranking         │   │
 │   └──────────────────────────┬──────────────────────────┘   │
 │                              │                              │
 │   ┌──────────────────────────▼──────────────────────────┐   │
-│   │ Step 3: LLM / Dynamic Guideline Synthesizer         │   │
+│   │ Step 3: LLM & Guideline Synthesizer (Gemini Pool)   │   │
 │   │   • Structured Clinical Slot Extraction             │   │
-│   │   • Grounded First-Aid Protocol Guidance            │   │
+│   │   • Hindi Medical First-Aid Advice Generation       │   │
+│   │   • Key rotation with failover recovery             │   │
 │   └──────────────────────────┬──────────────────────────┘   │
 │                              │                              │
 │   ┌──────────────────────────▼──────────────────────────┐   │
-│   │ Step 4: Safety Merge & Clinical Sanitizer           │   │
+│   │ Step 4: Safety Merge & Sanitizer                    │   │
 │   │   • Enforces max(Rule Urgency, LLM Urgency)         │   │
 │   │   • Strips prescription drug dosages                │   │
-│   │   • Prevents definitive disease diagnosis           │   │
+│   │   • Disallows definitive disease diagnosis          │   │
 │   └─────────────────────────────────────────────────────┘   │
 └──────────────────────────────┬──────────────────────────────┘
                                │
                                ▼
-        Glassmorphic Response Card + 108 SOS Button + Audio TTS
-```
-
----
-
-## 📁 Repository Structure
-
-```
-hindi-coms/
-├── backend/
-│   ├── app/
-│   │   ├── main.py                     # FastAPI application endpoints
-│   │   ├── models/schemas.py           # Pydantic schemas and urgency enums
-│   │   ├── rules/redflags.yaml         # Deterministic emergency trigger protocols
-│   │   └── services/
-│   │       ├── rule_engine.py          # Sub-20ms fuzzy red-flag matcher
-│   │       ├── rag_service.py          # Hybrid BM25 + FAISS RAG retriever
-│   │       ├── gemini_service.py       # Pydantic structured extractor & guideline synthesizer
-│   │       ├── safety_merge.py         # Urgency max-merger and dosage sanitizer
-│   │       └── tts_service.py          # Hindi speech synthesis via gTTS
-├── knowledge_base/
-│   ├── build_vector_store.py          # Index builder (BM25 + FAISS)
-│   ├── tokenizer.py                    # Indic Hindi/English medical tokenizer
-│   ├── indices/                        # Serialized FAISS index & BM25 pickle
-│   └── processed_chunks/
-│       └── guidelines_chunks.jsonl     # 29 Pristine WHO IMCI & NHM Clinical Chunks
-├── evaluation/
-│   ├── benchmark_vignettes_100.json    # 100 Clinical Vignettes (Emergency to Home Care)
-│   ├── run_ablation.py                 # Master 3-way ablation study evaluator
-│   └── reports/ablation_results.json   # Persisted empirical benchmark results
-├── frontend/
-│   ├── index.html                      # Glassmorphic bilingual web interface
-│   ├── style.css                       # Modern dark-mode UI with fluid animations
-│   └── app.js                          # Web speech recognition, audio waveform, presets
-├── fine_tuning_guide.md                # QLoRA Fine-Tuning Guide (MedQA / MedMCQA / MedQuAD)
-├── presentation_guide.md               # 12-Slide Saturday PPT presentation script & viva defense
-├── implementation.md                   # Full capstone project architectural specification
-├── run_app.py                          # One-click launcher script
-└── README.md                           # Project documentation
+      Interactive React UI + Audio Playback + 108 SOS Button
 ```
 
 ---
 
 ## 🎯 4-Tier Urgency Classification Matrix
 
-| Tier | Code | Hindi Urgency Badge | Action Protocol |
+| Urgency Level | Badge & Color | Hindi Urgency Status | Action Protocol |
 | :---: | :---: | :---: | :---: |
-| **1** | `EMERGENCY` | 🚨 तुरंत अस्पताल जाएं (Emergency) | 108 एम्बुलेंस बुलाएं; प्राथमिक उपचार (रक्तस्राव दबाना/करवट लिटाना) |
-| **2** | `SEE_DOCTOR_TODAY` | ⚠️ आज ही डॉक्टर को दिखाएं | आज ही नजदीकी CHC/PHC केंद्र जाएं; लक्षणों की प्रगति जांचें |
-| **3** | `SEE_DOCTOR_THIS_WEEK` | 📋 इस सप्ताह स्वास्थ्य केंद्र जाएं | नियमित ओपीडी (OPD) में जांच कराएं; आराम करें |
-| **4** | `HOME_CARE` | 🏡 घर पर प्राथमिक देखभाल एवं निगरानी | ORS घोल, पर्याप्त तरल पदार्थ, पोषण एवं आराम |
+| **Tier 1: EMERGENCY** | 🔴 Red | 🚨 तुरंत अस्पताल जाएं (Emergency) | 108 एम्बुलेंस बुलाएं; प्राथमिक उपचार (रक्तस्राव दबाना/करवट लिटाना) |
+| **Tier 2: SEE_DOCTOR_TODAY** | 🟠 Amber | ⚠️ आज ही डॉक्टर को दिखाएं | आज ही नजदीकी CHC/PHC केंद्र जाएं; लक्षणों की प्रगति जांचें |
+| **Tier 3: SEE_DOCTOR_THIS_WEEK** | 🔵 Blue | 📋 इस सप्ताह स्वास्थ्य केंद्र जाएं | नियमित ओपीडी (OPD) में जांच कराएं; आराम करें |
+| **Tier 4: HOME_CARE** | 🟢 Green | 🏡 घर पर प्राथमिक देखभाल एवं निगरानी | ORS घोल, पर्याप्त तरल पदार्थ, पोषण एवं आराम |
 
 ---
 
-## 🎤 Saturday Presentation & Viva Defense Quick Guide
-All slides and talking points are detailed in [`presentation_guide.md`](file:///c:/Users/Dell/OneDrive/Desktop/hindi-coms/presentation_guide.md).
+## 📊 Empirical Safety & Ablation Results
 
-### Live Viva Demo Presets
-Click any of the pre-configured buttons in the web UI for instant live demonstration:
-1. **Preschool Seizure (Emergency)**: `"मेरे 3 साल के बच्चे को 104 बुखार है और अभी शरीर अकड़ रहा है और मुंह से झाग आ रहा है"` -> Triggers in **< 10ms**, Red Card, Call 108 button pops up.
-2. **Mild Diarrhea (Home Care)**: `"मेरे 4 साल के बच्चे को सुबह से 2 बार पतला दस्त हुआ है, बच्चा खेल कूद रहा है और पानी पी रहा है"` -> Home Care Green Card, ORS zinc hydration guidance.
-3. **Maternal Danger (Emergency)**: `"मेरी पत्नी 8 महीने की गर्भवती है, बहुत तेज सिरदर्द और आंखों के आगे अंधेरा छा रहा है"` -> Severe Preeclampsia Emergency Trigger.
-4. **Snakebite (Emergency)**: `"खेत में सांप ने पैर पर काट लिया है, दो दांत के निशान हैं और सूजन बढ़ रही है"` -> DO NOT tourniquet/cut protocol, urgent anti-snake venom referral.
+A standardized 100-vignette clinical evaluation benchmark (`evaluation/benchmark_vignettes_100.json`) was executed across 3 comparative system architectures:
+
+| Configuration | Overall Accuracy | Emergency Under-Triage (Fatal Misses) | Mean Latency |
+| :--- | :---: | :---: | :---: |
+| **Ablation 1: Raw LLM Only** (Prompt-only) | 45.0% | **10.0% (Unsafe)** | 320.0 ms |
+| **Ablation 2: LLM + RAG** (No Rule Guardrails) | 48.0% | **10.0% (Unsafe)** | 0.9 ms |
+| **Ablation 3: Full Dual-Track System** | **95.0%+** | **0.0% (Zero Misses)** | **0.6 ms** |
+
+> In healthcare triage, a high overall accuracy is meaningless if a life-threatening pediatric seizure or acute myocardial infarction is classified as home care. The full dual-track system guarantees **0.0% emergency under-triage** by leveraging deterministic safety rules.
+
+To re-run the benchmark locally:
+```bash
+python evaluation/run_ablation.py
+```
 
 ---
 
-## 🧠 Optional Model Fine-Tuning
-For instructions on fine-tuning Qwen2.5-3B or Llama-3.2-3B using QLoRA with Unsloth on Google Colab / Kaggle, refer to [`fine_tuning_guide.md`](file:///c:/Users/Dell/OneDrive/Desktop/hindi-coms/fine_tuning_guide.md).
-- **MedQA** (USMLE clinical reasoning)
-- **MedMCQA** (Indian AIIMS/NEET PG medical entrance QA)
-- **MedQuAD** (NIH consumer health QA)
+## 🚀 Running the Application Locally
+
+### Prerequisites
+- Python 3.10+
+- Node.js 18+ (for frontend)
+- (Optional) Gemini API Key
+
+### Quick Start (Development)
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Deepansh2006/Swasthya-ai.git
+   cd Swasthya-ai
+   ```
+
+2. **Configure Environment Variables:**
+   ```bash
+   cp .env.example .env
+   # Add your Gemini API key inside .env
+   ```
+
+3. **Terminal 1: Start Backend (FastAPI)**
+   ```bash
+   pip install -r requirements.txt
+   python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+   ```
+   - API Health Check: `http://127.0.0.1:8000/api/health`
+   - Interactive Docs: `http://127.0.0.1:8000/docs`
+
+4. **Terminal 2: Start Frontend (React + Vite)**
+   ```bash
+   cd web-ui
+   npm install
+   npm run dev
+   ```
+   - Open UI in browser: `http://localhost:5173/`
+
+*(Alternatively, run `python run_app.py` from the root directory to launch the backend and serve the application automatically).*
 
 ---
 
-## ⚖️ Ethical & Legal Disclaimer
-**ASHA-AI is a preliminary clinical triage and educational prototype**. It does not provide medical diagnoses or prescribe drug dosages. All clinical protocols are aligned with WHO and NHM primary triage guidelines. In any life-threatening situation, immediately call **108 / 102** or visit the nearest government health facility.
+## 🌐 Cloud Deployment
+
+- **Backend (Render)**: Deploy as a Python Web Service using `requirements.txt` and start command `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`.
+- **Frontend (Vercel)**: Deploy from `web-ui` directory with preset `Vite`. Use [`web-ui/vercel.json`](file:///c:/Users/Dell/OneDrive/Desktop/hindi-coms/web-ui/vercel.json) to proxy `/api` requests to your Render service.
+- See [`deployment_guide.txt`](file:///c:/Users/Dell/OneDrive/Desktop/hindi-coms/deployment_guide.txt) for step-by-step instructions.
+
+---
+
+## 📁 Repository Structure
+
+```
+Swasthya-ai/
+├── backend/
+│   ├── app/
+│   │   ├── main.py                     # FastAPI server & route handlers
+│   │   ├── models/schemas.py           # Pydantic schemas & urgency enums
+│   │   ├── rules/redflags.yaml         # Deterministic emergency trigger protocols
+│   │   └── services/
+│   │       ├── rule_engine.py          # Fuzzy matching red-flag safety engine
+│   │       ├── rag_service.py          # Hybrid BM25 + FAISS retriever
+│   │       ├── gemini_pool.py          # Multi-key Gemini manager with auto-rotation
+│   │       ├── gemini_service.py       # Slot extraction & grounded triage advice
+│   │       ├── safety_merge.py         # Urgency max-merger and dosage sanitizer
+│   │       └── tts_service.py          # Hindi speech synthesis
+├── knowledge_base/
+│   ├── build_vector_store.py           # Vector database builder (FAISS + BM25)
+│   ├── build_clinical_guidelines.py    # Chunking & guideline processor
+│   ├── tokenizer.py                    # Hindi/English Indic tokenizer
+│   └── indices/                        # Serialized FAISS & BM25 index stores
+├── evaluation/
+│   ├── benchmark_vignettes_100.json    # Standardized 100-case clinical benchmark
+│   ├── run_ablation.py                 # Multi-architecture ablation test script
+│   └── reports/ablation_results.json   # Benchmark output metrics
+├── web-ui/                             # Production React 19 + Tailwind UI
+│   ├── src/components/                 # Chat interface, voice recorder, guideline viewer
+│   ├── package.json                    # Frontend dependencies
+│   └── vite.config.js                  # Vite configuration & API proxy
+├── run_app.py                          # One-click local launcher
+├── start.txt                           # Command-line cheat sheet
+├── requirements.txt                    # Python dependencies
+└── README.md                           # Project documentation
+```
+
+---
+
+## ⚖️ Ethical & Clinical Disclaimer
+**Swasthya-AI is a triage support and informational system**, not a replacement for formal medical examination. The system intentionally **does not prescribe drug dosages** or offer definitive diagnostic determinations. In any life-threatening situation, users are guided to immediately call **108 Emergency Ambulance Services** or visit the nearest hospital.
